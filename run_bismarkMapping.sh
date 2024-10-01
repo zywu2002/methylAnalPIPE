@@ -71,6 +71,7 @@ do
 	rawBAM=$outDir"/"$sample"_bismark.bam"
 	report=$outDir"/"$sample"_bismark_mapping_report.txt"
 	sortBAM=$outDir"/"$sample"_bismark.sorted.bam"
+	deduplicatedBAM=$outDir"/"$sample"_bismark.sorted.deduplicated.bam"
 	dedupBAM=$outDir"/"$sample"_bismark.sorted.dedup.bam"
 	mkdir -p $logDir
 	mkdir -p $outDir
@@ -98,8 +99,10 @@ do
 	echo "deduplicate_bismark \\" >> $shWorker
 	echo " --paired \\" >> $shWorker
 	echo " --bam \\" >> $shWorker
-	echo " --outfile $dedupBAM \\" >> $shWorker
+	echo " --outfile $sortBAM \\" >> $shWorker
+	echo " --output_dir $outDir \\" >> $shWorker
 	echo " $sortBAM \\" >> $shWorker
 	echo -e " >> $logFile 2>&1\n" >> $shWorker
-	echo -e "rm -rf $tmpDir\n" >> $shellMaster
+	echo -e "rm -rf $tmpDir" >> $shellMaster
+	echo -e "mv $deduplicatedBAM $dedupBAM\n" >> $shellMaster
 done
